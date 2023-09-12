@@ -1,12 +1,4 @@
-# (.txt or md) File
-
-Status: In progress
-Assign: Mahmoud
-Added to repo?: Soon
-
 # Derivation of The Kinematic Model
-
-![Untitled]((%20txt%20or%20md)%20File%206593cbc802e24cc18064c40402a6e640/Untitled.png)
 
 ## Finding $Vx$, $Vy$ and Omega
 
@@ -27,12 +19,12 @@ $$
 AX=B
 $$
 
-| $Vx$ |
-| --- |
-| $Vy$ |
-| $ω$ |
+| $Vx$ |            
+| --- |                                               
+| $Vy$ |      
+| $ω$ |                  
 
-$=$
+ $=$ 
 
 | $-sin(φ)$ | $-cos(30+φ)$ | $cos(30-φ)$ |
 | --- | --- | --- |
