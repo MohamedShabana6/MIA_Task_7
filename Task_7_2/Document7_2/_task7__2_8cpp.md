@@ -59,10 +59,10 @@
 
 
 ### variable Counts 
-
+How many pulses the Hall Sensor outputs.
 
 ```cpp
-int Counts;
+int Counts = 0;
 ```
 
 
@@ -79,9 +79,38 @@ int Counts;
 
 
 ### function GetSensorReading 
+takes the reading from the sensor
+
+Returns
+FlowRate
+450 is how many pulses the Hall Sensor outputs for every liter in the YF-S201 modle it is sensor dependent 2.11888 is the convertion constant to convert from L/S to CFM See https://www.seeedstudio.com/blog/2020/05/11/how-to-use-water-flow-sensor-with-arduino/ for the proof to get the flow rate in L/S
+
+resetting the counts for the next Calculation
 
 
 ```cpp
+float GetSensorReading(){
+  /**
+ * @brief takes the reading from the sensor
+ * @return FlowRate
+ */
+  float BeginTime = millis();
+  float TimeNow;
+  //waits for 1 second
+  while(TimeNow >= BeginTime + 1000){
+    TimeNow = millis();
+  }
+  /**
+   * 450 is how many pulses the Hall Sensor outputs for every liter in the YF-S201 modle it is sensor dependent
+   *2.11888 is the convertion constant to convert from L/S to CFM
+   *See https://www.seeedstudio.com/blog/2020/05/11/how-to-use-water-flow-sensor-with-arduino/ for the proof to get the flow rate in L/S
+   */
+  float FlowRate = (float)Counts/450*2.11888; 
+  Counts = 0; /** resetting the counts for the next Calculation */
+  
+  
+  return FlowRate;
+}
 
 ```
 
@@ -91,15 +120,38 @@ int Counts;
 
 
 ```cpp
+void loop() {
 
+  float OutputNeeded = 90;
+  float FlowRateOutput = GetSensorReading();
+  
+  PID MyPID(5,2,1.2,80);
+  float Output = MyPID.PID_Output(OutputNeeded,FlowRateOutput);
+  
+  Serial.println(Output);
+
+  analogWrite(OutputOfPID, Output);
+}
 ```
 
 
 
 ### function setup 
 
-
+Setup code , initializing sensor and ouput pins and attaching interrupt to use the getCount method whenever there is a rising edge
 ```cpp
+void setup() {
+  /**
+ * @brief Setup code , initializing sensor and ouput pins and attaching interrupt to use the getCount method whenever there is a rising edge
+ */
+
+  pinMode(Sensor,INPUT);
+  pinMode(OutputOfPID,OUTPUT);
+
+  attachInterrupt(digitalPinToInterrupt(Sensor), GetCounts, RISING);
+
+  Serial.begin(9600);
+}
 
 ```
 
@@ -113,6 +165,7 @@ int Counts;
 
 ```cpp
 
+#define OutputOfPID 6
 ```
 
 
@@ -121,7 +174,7 @@ int Counts;
 
 
 ```cpp
-
+#define Sensor 5
 ```
 
 
